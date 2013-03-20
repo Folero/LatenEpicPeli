@@ -5,10 +5,12 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Music;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 public class Game extends BasicGame {
+    
     Image hero = null;
     Image land = null;
     Image[] heroS = {null, null, null};
@@ -18,8 +20,12 @@ public class Game extends BasicGame {
     float x = 400;
     float y = 300;
     float speed = 0.1f;
+    Music music;
+    
 
     public Game() {
+        
+        
         super("Eeppinen seikkailupeli");
     }
 
@@ -28,7 +34,12 @@ public class Game extends BasicGame {
             throws SlickException {
         land = new Image("images/land.jpg");
        
-      
+      music = new Music("sounds/musics/biisi.ogg");
+      music.play();
+music.loop();
+
+
+
         for (int i = 0; i < 3; i++) {
             heroS[i] = new Image("images/heroS0" + i + ".png");
             // TODO muut heroU = new Image("images") ...
