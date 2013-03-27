@@ -5,140 +5,66 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Music;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.TiledMap;
 
 public class Game extends BasicGame {
-    
-    Image hero = null;
+
+    static int WIDTH = 1024;
+    static int HEIGHT = 760;
+    static boolean fullscreen = false;
+    static boolean showFPS = true;
+    static String title = "Slick2D Camera Tutorial";
+    static int fpslimit = 60;
     TiledMap map;
-    Image[] heroS = {null, null, null};
-    Image[] heroD = {null, null, null};
-    Image[] heroA = {null, null, null};
-    Image[] heroW = {null, null, null};
-    float x = 400;
-    float y = 300;
-    float speed = 0.07f;
-    Music music;
-    int currentFrame;
-
-    public Game() {
+    Hero player;
+    Camera camera;
+    int mapHeight, mapWidth;
+    int tileHeight, tileWidth;
+    Image[][] heroImages;
 
 
-        super("Eeppinen seikkailupeli");
+    public Game(String title) {
+        super(title);
     }
 
-    @Override
-    public void init(GameContainer gc)
-            throws SlickException {
-
+    public void init(GameContainer gc) throws SlickException {
         map = new TiledMap("tiledmaps/map.tmx");
-        hero = heroW[0];
-        currentFrame = 0;
-        music = new Music("sounds/musics/biisi.ogg");
-        music.play();
-        music.loop();
-        
-
-
-
-        for (int i = 0; i < 3; i++) {
-            heroS[i] = new Image("images/heroS0" + i + ".png");
-            // TODO muut heroU = new Image("images") ...
-        }
-        hero = heroS[0];
-
-
-        for (int i = 0; i < 3; i++) {
-            heroD[i] = new Image("images/heroD0" + i + ".png");
-            // TODO muut heroU = new Image("images") ...
-        }
-        hero = heroD[0];
-
-        for (int i = 0; i < 3; i++) {
-            heroA[i] = new Image("images/heroA0" + i + ".png");
-            // TODO muut heroU = new Image("images") ...
-        }
-        hero = heroA[0];
-
-        for (int i = 0; i < 3; i++) {
-            heroW[i] = new Image("images/heroW0" + i + ".png");
-            // TODO muut heroU = new Image("images") ...
-        }
-       
+        mapWidth = map.getWidth() * map.getTileWidth();
+        mapHeight = map.getHeight() * map.getTileHeight();
+        tileHeight = map.getTileHeight();
+        tileWidth = map.getTileWidth();
+        heroImages = new Image[4][3];
+        loadHeroImages();
+        player = new Hero(tileWidth * 4, tileHeight * 4, 32, 32, heroImages);
+        camera = new Camera(map, mapWidth, mapHeight);
     }
 
-    @Override
-    public void update(GameContainer gc, int delta)
-            throws SlickException {
-        Input input = gc.getInput();
-
-        if (input.isKeyDown(Input.KEY_A)) {
-            currentFrame++;
-            x -= speed * delta;
-            if (currentFrame == 12) {
-                if (hero == heroA[1]) {
-                    hero = heroA[2];
-                } else {
-                    hero = heroA[1];
-                }
-                currentFrame = 0;
-            }
-        } else if (input.isKeyDown(Input.KEY_D)) {
-            currentFrame++;
-            x += speed * delta;
-            if (currentFrame == 12) {
-                if (hero == heroD[1]) {
-                    hero = heroD[2];
-                } else {
-                    hero = heroD[1];
-                }
-                currentFrame = 0;
-            }
-        } else if (input.isKeyDown(Input.KEY_W)) {
-            currentFrame++;
-            y -= speed * delta;
-            if (currentFrame == 12) {
-                if (hero == heroW[1]) {
-                    hero = heroW[2];
-                } else {
-                    hero = heroW[1];
-                }
-                currentFrame = 0;
-            }
-        } else if (input.isKeyDown(Input.KEY_S)) {
-            currentFrame++;
-            y += speed * delta;
-            if (currentFrame == 12) {
-                if (hero == heroS[1]) {
-                    hero = heroS[2];
-                } else {
-                    hero = heroS[1];
-                }
-                currentFrame = 0;
-            }
-        } else {
-            currentFrame = 11;
-        }
+    public void update(GameContainer gc, int delta) throws SlickException {
+        player.update(gc, mapWidth, mapHeight, delta, tileWidth, tileHeight);
     }
 
-    public void render(GameContainer gc, Graphics g)
-            throws SlickException {
+    public void render(GameContainer gc, Graphics g) throws SlickException {
+        camera.translate(g, player);
         map.render(0, 0);
-
-        hero.draw(x, y);
-
+        player.render();
     }
 
-    public static void main(String[] args)
-            throws SlickException {
-        AppGameContainer app =
-                new AppGameContainer(new Game());
-        app.setDisplayMode(800, 600, false);
+    public static void main(String[] args) throws SlickException {
+        AppGameContainer app = new AppGameContainer(new Game(title));
+        app.setDisplayMode(WIDTH, HEIGHT, fullscreen);
+        app.setTargetFrameRate(fpslimit);
+        app.setVSync(true);
+        app.setShowFPS(showFPS);
         app.start();
+    }
 
-
+    private void loadHeroImages() throws SlickException {
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 3; x++) {
+                heroImages[y][x] = new Image("images/hero" + y + x + ".png");
+            }
+        }
     }
 }
