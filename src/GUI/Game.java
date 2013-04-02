@@ -8,6 +8,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.TiledMap;
+import org.newdawn.slick.Music;
 
 public class Game extends BasicGame {
 
@@ -23,7 +24,7 @@ public class Game extends BasicGame {
     int mapHeight, mapWidth;
     int tileHeight, tileWidth;
     Image[][] heroImages;
-
+    Music music;
 
     public Game(String title) {
         super(title);
@@ -39,6 +40,10 @@ public class Game extends BasicGame {
         loadHeroImages();
         player = new Hero(tileWidth * 4, tileHeight * 4, 32, 32, heroImages);
         camera = new Camera(map, mapWidth, mapHeight);
+        music = new Music("sounds/musics/biisi.ogg");
+        music.play();
+        music.loop();
+
     }
 
     public void update(GameContainer gc, int delta) throws SlickException {
