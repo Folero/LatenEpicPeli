@@ -31,7 +31,7 @@ public class Game extends BasicGame {
     }
 
     public void init(GameContainer gc) throws SlickException {
-        map = new TiledMap("tiledmaps/snowmap.tmx");
+        map = new TiledMap("tiledmaps/map.tmx");
         mapWidth = map.getWidth() * map.getTileWidth();
         mapHeight = map.getHeight() * map.getTileHeight();
         tileHeight = map.getTileHeight();
@@ -47,7 +47,7 @@ public class Game extends BasicGame {
     }
 
     public void update(GameContainer gc, int delta) throws SlickException {
-        player.update(gc, mapWidth, mapHeight, delta, tileWidth, tileHeight);
+        player.update(gc, delta);
     }
 
     public void render(GameContainer gc, Graphics g) throws SlickException {
