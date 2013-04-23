@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="10" height="10" tilewidth="29" tileheight="34">
+ <tileset firstgid="1" name="snow" tilewidth="29" tileheight="34">
+  <image source="snow.png" width="128" height="128"/>
+ </tileset>
+ <tileset firstgid="13" name="ice" tilewidth="29" tileheight="34">
+  <image source="ice.png" width="128" height="128"/>
+ </tileset>
+ <layer name="Snow" width="10" height="10">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NkYGBgHMWDBgMAjw2X0pABAAA=
+  </data>
+ </layer>
+ <layer name="Ice" width="10" height="10">
+  <properties>
+   <property name="blocked" value="true"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+NlYGDgJRITAsjqsKnnJVIdNvOItReXneSqQ1dPrHnY3EcMBgB61aIrkAEAAA==
+  </data>
+ </layer>
+</map>

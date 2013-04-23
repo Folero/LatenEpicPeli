@@ -31,14 +31,14 @@ public class Game extends BasicGame {
     }
 
     public void init(GameContainer gc) throws SlickException {
-        map = new TiledMap("tiledmaps/map.tmx");
+        map = new TiledMap("tiledmaps/snowmap.tmx");
         mapWidth = map.getWidth() * map.getTileWidth();
         mapHeight = map.getHeight() * map.getTileHeight();
         tileHeight = map.getTileHeight();
         tileWidth = map.getTileWidth();
         heroImages = new Image[4][3];
         loadHeroImages();
-        player = new Hero(tileWidth * 4, tileHeight * 4, 32, 32, heroImages);
+        player = new Hero(tileWidth * 4, tileHeight * 4, 32, 32, heroImages, map);
         camera = new Camera(map, mapWidth, mapHeight);
         music = new Music("sounds/musics/biisi.ogg");
         music.play();
@@ -72,4 +72,5 @@ public class Game extends BasicGame {
             }
         }
     }
+
 }
