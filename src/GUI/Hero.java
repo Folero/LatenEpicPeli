@@ -21,12 +21,7 @@ public class Hero {
     public static final int MOVELEFT = 1;
     public static final int MOVERIGHT = 2;
     private int currentFrame = 11;
-    private static final int TILEWIDTH = 32;
-    private static final int TILEHEIGHT = 32;
-    private static final int NUMBEROFTILESINAROW = 200;
-    private static final int NUMBEROFTILESINACOLUMN = 200;
-    private static final int NUMBEROFLAYERS = 6;
-    private static final float SPEED = 1f;
+    private static final float SPEED = 0.4f;
     boolean[][] blocked;
     private TiledMap map;
 
@@ -36,12 +31,12 @@ public class Hero {
         hero = image[S][STILL];
         heroImages = new Image[4][3];
         setImages(image);
-        blocked = new boolean[NUMBEROFTILESINAROW][NUMBEROFTILESINACOLUMN];
-        initializeBlocked();
         this.map = map;
+        blocked = new boolean[map.getWidth()][map.getHeight()];
+        initializeBlocked();
     }
 
-    public void update(GameContainer gc, int mapWidth, int mapHeight, int delta, int tileWidth, int tileHeight) {
+    public void update(GameContainer gc, int delta) {
         Vector2f trans = new Vector2f(0, 0);
         Input input = gc.getInput();
 
@@ -56,8 +51,8 @@ public class Hero {
                 }
                 currentFrame = 0;
             }
-            if (!isBlocked(getX() + TILEWIDTH, getY() - delta * SPEED) && !isBlocked(getX(), getY() - delta * SPEED)) {
-                trans.y = SPEED * delta;
+            if (!isBlocked(getX() + map.getTileWidth(), getY() - delta * SPEED) && !isBlocked(getX(), getY() - delta * SPEED)) {
+                trans.y -= SPEED * delta;
             }
 
         } else if (input.isKeyDown(Input.KEY_DOWN) || input.isKeyDown(Input.KEY_S)) {
@@ -70,7 +65,7 @@ public class Hero {
                 }
                 currentFrame = 0;
             }
-            if (!isBlocked(getX() + TILEWIDTH, getY() + TILEHEIGHT + delta * SPEED) && !isBlocked(getX(), getY() + TILEHEIGHT + delta * SPEED)) {
+            if (!isBlocked(getX() + map.getTileWidth(), getY() + map.getTileHeight() + delta * SPEED) && !isBlocked(getX(), getY() + map.getTileHeight() + delta * SPEED)) {
                 trans.y += delta * SPEED;
             }
         } else if (input.isKeyDown(Input.KEY_RIGHT) || input.isKeyDown(Input.KEY_D)) {
@@ -83,7 +78,7 @@ public class Hero {
                 }
                 currentFrame = 0;
             }
-            if (!isBlocked(getX() + TILEWIDTH + delta * SPEED, getY() + TILEHEIGHT) && !isBlocked(getX() + TILEWIDTH + delta * SPEED, getY())) {
+            if (!isBlocked(getX() + map.getTileWidth() + delta * SPEED, getY() + map.getTileHeight()) && !isBlocked(getX() + map.getTileWidth() + delta * SPEED, getY())) {
                 trans.x += delta * SPEED;
             }
         } else if (input.isKeyDown(Input.KEY_LEFT) || input.isKeyDown(Input.KEY_A)) {
@@ -96,7 +91,7 @@ public class Hero {
                 }
                 currentFrame = 0;
             }
-            if (!isBlocked(getX() - delta * SPEED, getY()) && !isBlocked(getX() - delta * SPEED, getY() + TILEHEIGHT)) {
+            if (!isBlocked(getX() - delta * SPEED, getY()) && !isBlocked(getX() - delta * SPEED, getY() + map.getTileHeight())) {
                 trans.x -= delta * SPEED;
             }
         } else {
@@ -108,12 +103,12 @@ public class Hero {
         }
 
         // Tarkistuksella varmistetaan, että sankari pysyy kartan sisällä.
-        if (position.x + trans.x > tileWidth && position.x + trans.x < (mapWidth - (2 * tileWidth))) {
+        if (position.x + trans.x > map.getTileWidth() && position.x + trans.x < ((map.getWidth() * map.getTileWidth()) - (2 * map.getTileWidth()))) {
             position.x += trans.x;
         }
 
         // Tarkistuksella varmistetaan, että sankari pysyy kartan sisällä.
-        if (position.y + trans.y > tileHeight && position.y + trans.y < (mapHeight - (4 * tileHeight))) {
+        if (position.y + trans.y > map.getTileHeight() && position.y + trans.y < ((map.getHeight() * map.getTileWidth()) - (4 * map.getTileHeight()))) {
             position.y += trans.y;
         }
     }
@@ -160,19 +155,17 @@ public class Hero {
     }
 
     private boolean isBlocked(float x, float y) {
-        int xBlock = (int) x / TILEWIDTH;
-        int yBlock = (int) y / TILEHEIGHT;
+        int xBlock = (int) x / map.getTileWidth();
+        int yBlock = (int) y / map.getTileHeight();
         return blocked[xBlock][yBlock];
     }
 
-
     private void initializeBlocked() {
-        for (int l = 0; l < NUMBEROFLAYERS; l++) {
-            System.out.println("layer = " + l);
+        for (int l = 0; l < map.getLayerCount(); l++) {
             String layerValue = map.getLayerProperty(l, "blocked", "false");
             if (layerValue.equals("true")) {
-                for (int c = 0; c < NUMBEROFTILESINACOLUMN; c++) {
-                    for (int r = 0; r < NUMBEROFTILESINAROW; r++) {
+                for (int c = 0; c < map.getWidth(); c++) {
+                    for (int r = 0; r < map.getHeight(); r++) {
                         if (map.getTileId(c, r, l) != 0) {
                             blocked[c][r] = true;
                         }
@@ -181,5 +174,4 @@ public class Hero {
             }
         }
     }
-    
 }
